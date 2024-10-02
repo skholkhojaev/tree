@@ -1,7 +1,7 @@
 class Tree:
     def __init__(self):
         """
-        Construct empty Tree
+        Construct an empty Tree
         """
         self.root = None
 
@@ -20,15 +20,14 @@ class Tree:
         Raise: IndexError if no such Element is found
         """
         if self.root:
-            self.root.remove(k)
+            self.root = self.root.remove(k)  # Update root in case the root gets deleted
         else:
-            raise IndexError
+            raise IndexError(f"Key {k} not found in the tree")
 
     def search(self, k):
         """
         Search Element with Key `k` in this Tree
-        Return: Element if found
-                None otherwise
+        Return: Node if found, None otherwise
         """
         if self.root:
             return self.root.search(k)
@@ -44,6 +43,7 @@ class Tree:
         else:
             return ""
 
+
 class Node:
     """
     A node of the Tree
@@ -56,22 +56,52 @@ class Node:
         self.right = None
 
     def insert(self, k):
-        """
-        TODO: Bitte implementieren
-        """
-        pass
-
+        if k < self.k:
+            if self.left:
+                self.left.insert(k)
+            else:
+                self.left = Node(k)
+                self.left.parent = self
+        elif k > self.k:
+            if self.right:
+                self.right.insert(k)
+            else:
+                self.right = Node(k)
+                self.right.parent = self
+        else:
+            pass #duplicated key
     def remove(self, k):
-        """
-        TODO: Bitte implementieren
-        """
-        pass
+        if k < self.k:
+            if self.left:
+                self.left = self.left.remove(k)
+            else:
+                raise IndexError("key not found")
+        elif k > self.k:
+            if self.right:
+                self.right = self.right.remove(k)
+            else: 
+                raise IndexError("key not found")
+        else:
+            if not self.left and not self.right: 
+                return None
+            elif not self.left:
+                return self.right
+            elif not self.right:
+                return self.left
+            else:
+                pass
+        return self
 
     def search(self, k):
-        """
-        TODO: Bitte implementieren
-        """
-        pass
+        if k == self.k:
+            return self
+        elif k < self.k and self.left:
+            return self.left.search(k)
+        elif k > self.k and self.right:
+            return self.right.search(k)
+        else:
+            return None
+    
 
     def __str__(self):
         return "%d" %(self.k)
@@ -93,7 +123,7 @@ class Node:
 t = Tree()
 
 # Insert some Nodes
-for x in [10,15,4,23,17,9,20,22,100]:
+for x in [10,15,4,23,17,9,20,16,22,100]:
     t.insert(x)
 
 # Print the Tree
@@ -109,3 +139,4 @@ t.remove(15)
 
 # Print the Tree
 print(t)
+
